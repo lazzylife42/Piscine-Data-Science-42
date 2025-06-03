@@ -1,2 +1,3 @@
 subject/
 .venv/
+.DS_Store
