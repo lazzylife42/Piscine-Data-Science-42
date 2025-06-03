@@ -1,3 +1,5 @@
+-- "docker exec -it postgres_local psql -U smonte -d piscineds -W -h localhost -f workspace/ex02/table.sql"
+
 -- Table pour data_2022_oct
 DROP TABLE IF EXISTS data_2022_oct;
 
