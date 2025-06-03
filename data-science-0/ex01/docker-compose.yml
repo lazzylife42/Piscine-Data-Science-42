@@ -1,3 +1,4 @@
+#to clean "docker system prune -a --volumes -f"
 services:
   postgres:
     # To Connect "docker exec -it postgres_local  psql -U smonte piscineds localhost -W"
