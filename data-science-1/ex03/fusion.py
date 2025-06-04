@@ -17,14 +17,19 @@ with engine.connect() as conn:
     conn.execute(text("""
         CREATE TABLE customers_enriched AS
         SELECT c.event_time, c.event_type, c.product_id, c.price, 
-               c.user_id, c.user_session,
-               i.category_id, i.category_code, i.brand
+            c.user_id, c.user_session,
+            i.category_id, i.category_code, i.brand
         FROM customers c
         LEFT JOIN (
-            SELECT DISTINCT ON (product_id) 
-                   product_id, category_id, category_code, brand
+            SELECT product_id, 
+                MAX(category_id) as category_id,
+                MAX(category_code) as category_code, 
+                MAX(brand) as brand
             FROM item
-            ORDER BY product_id
+            WHERE category_id IS NOT NULL 
+            OR category_code IS NOT NULL 
+            OR brand IS NOT NULL
+            GROUP BY product_id
         ) i ON c.product_id = i.product_id
     """))
     
