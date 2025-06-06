@@ -1,7 +1,11 @@
+import matplotlib
+matplotlib.use('Qt5Agg', force=True)
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sqlalchemy import create_engine
+
+print("Using Qt5Agg backend - plots will display directly")
 
 # Database configuration
 DATABASE_CONFIG = {
@@ -48,9 +52,9 @@ try:
 	plt.title('ex00 - American apple Pie', 
 			  fontsize=16, fontweight='bold', pad=20)
 	
-	
-	# Display the chart
 	plt.tight_layout()
+	
+	# Display the chart directly
 	plt.show()
 	
 	# Also display a text summary

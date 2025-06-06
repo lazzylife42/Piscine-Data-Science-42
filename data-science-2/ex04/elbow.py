@@ -1,5 +1,6 @@
+import matplotlib
+matplotlib.use('Qt5Agg', force=True)
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 from sqlalchemy import create_engine
 from sklearn.cluster import KMeans
@@ -153,7 +154,7 @@ try:
         
         plt.close()
     
-    plt.close()  # Close the figure to free memory
+    plt.close()
 
 except Exception as e:
     print(f"Error during execution: {e}")
