@@ -73,14 +73,14 @@ try:
 	# Configure the multiplot with shared x-axis
 	sns.set_style("whitegrid")
 	fig, axes = plt.subplots(3, 1, figsize=(12, 12), sharex=True)
-	fig.suptitle('Charts of purchases\nex01', fontsize=16, fontweight='bold')
+	fig.suptitle('ex01 - initial data exploration', fontsize=16, fontweight='bold')
 	
 	# Plot 1: Number of purchases over time (line plot)
 	axes[0].plot(df1['date'], df1['number_of_purchases'], 
 				 marker='None', linestyle='-', linewidth=1.5, 
 				 markersize=2, color='steelblue', alpha=0.8)
 	axes[0].set_ylabel('Number of purchases', fontsize=10)
-	axes[0].set_ylim(0, 25000)  # Tes valeurs gardées
+	#axes[0].set_ylim(0, 25000)  # Tes valeurs gardées
 	axes[0].grid(True, alpha=0.3)
 	
 	# Plot 2: Total sales by month (bar chart) - aligned with dates
@@ -89,7 +89,7 @@ try:
 				width=bar_width, color='lightblue', alpha=0.7, 
 				edgecolor='white', align='center')
 	axes[1].set_ylabel('total sales in million of ₳', fontsize=10)
-	axes[1].set_ylim(0, 1.4)  # Tes valeurs gardées
+	#axes[1].set_ylim(0, 1.4)  # Tes valeurs gardées
 	axes[1].grid(True, alpha=0.3, axis='y')
 	
 	# Plot 3: Average spending per customer (area plot)
@@ -97,7 +97,7 @@ try:
 						 alpha=0.6, color='lightblue', 
 						 edgecolor='steelblue', linewidth=1)
 	axes[2].set_ylabel('average spend/customers in ₳', fontsize=10)
-	axes[2].set_ylim(0, 10)  # Tes valeurs gardées
+	#axes[2].set_ylim(0, 10)  # Tes valeurs gardées
 	axes[2].grid(True, alpha=0.3)
 	
 	# Configure x-axis for all plots

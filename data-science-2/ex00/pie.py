@@ -41,11 +41,11 @@ try:
 	plt.pie(df['count'], 
 			labels=df['event_type'], 
 			autopct='%1.1f%%',
-			startangle=90,
+			startangle=0,
 			colors=colors,
 			explode=None)
 	
-	plt.title('Distribution of Event Types', 
+	plt.title('ex00 - American apple Pie', 
 			  fontsize=16, fontweight='bold', pad=20)
 	
 	
