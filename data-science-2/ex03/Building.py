@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use('Qt5Agg', force=True)
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sqlalchemy import create_engine

@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use('Qt5Agg', force=True)
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sqlalchemy import create_engine
@@ -14,7 +15,6 @@ DATABASE_CONFIG = {
 	'username': 'smonte',
 	'password': 'mysecretpassword'
 }
-
 DATABASE_URL = f"postgresql://{DATABASE_CONFIG['username']}:{DATABASE_CONFIG['password']}@{DATABASE_CONFIG['host']}:{DATABASE_CONFIG['port']}/{DATABASE_CONFIG['database']}?gssencmode=disable"
 
 # Create connection
@@ -103,11 +103,11 @@ try:
 		ax.xaxis.set_major_locator(mdates.MonthLocator())
 		ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 		ax.set_xlim(pd.to_datetime('2022-10-01'), pd.to_datetime('2023-02-28'))
-
+	
 	# Only show x-axis labels on the bottom plot
 	axes[0].set_xticklabels([])
-
-	# For 3nd grpah month
+	
+	# For 2nd graph month labels
 	month_positions = [pd.to_datetime(f'2022-{m}-15') for m in [10, 11, 12]] + \
 					[pd.to_datetime(f'2023-{m}-15') for m in [1, 2]]
 	axes[1].set_xticks(month_positions)

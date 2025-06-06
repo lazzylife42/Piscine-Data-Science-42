@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use('Qt5Agg', force=True)
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sqlalchemy import create_engine
@@ -9,15 +10,7 @@ import numpy as np
 import subprocess
 import os
 
-# Try Qt5Agg for Ubuntu
-try:
-    import matplotlib
-    matplotlib.use('Qt5Agg')
-    backend_found = True
-    print("Using Qt5Agg backend")
-except ImportError:
-    backend_found = False
-    print("Qt5Agg not available, will save and open image")
+print("Using Qt5Agg backend")
 
 # Database configuration
 DATABASE_CONFIG = {
@@ -130,31 +123,7 @@ try:
     ax.set_xticks(x_values)
     
     plt.tight_layout()
-    
-    # Try to show, fallback to save and open on Ubuntu
-    if backend_found:
-        try:
-            plt.show()
-        except:
-            backend_found = False
-    
-    if not backend_found:
-        # Save and open with default image viewer on Ubuntu
-        filename = 'elbow_method.png'
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
-        print(f"Plot saved as {filename}")
-        
-        try:
-            subprocess.run(['xdg-open', filename], check=True)
-            print(f"Opening {filename} with default image viewer...")
-        except subprocess.CalledProcessError:
-            print(f"Could not auto-open. Run: xdg-open {filename}")
-        except FileNotFoundError:
-            print(f"xdg-open not found. Please open {filename} manually")
-        
-        plt.close()
-    
-    plt.close()
+    plt.show()
 
 except Exception as e:
     print(f"Error during execution: {e}")

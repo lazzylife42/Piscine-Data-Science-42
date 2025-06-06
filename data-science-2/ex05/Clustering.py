@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use('Qt5Agg', force=True)
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sqlalchemy import create_engine
@@ -7,6 +8,8 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 import subprocess
+
+print("Using Qt5Agg backend")
 
 # Database configuration
 DATABASE_CONFIG = {
@@ -19,28 +22,6 @@ DATABASE_CONFIG = {
 
 DATABASE_URL = f"postgresql://{DATABASE_CONFIG['username']}:{DATABASE_CONFIG['password']}@{DATABASE_CONFIG['host']}:{DATABASE_CONFIG['port']}/{DATABASE_CONFIG['database']}?gssencmode=disable"
 engine = create_engine(DATABASE_URL)
-
-# Try Qt5Agg for Ubuntu
-try:
-    import matplotlib
-    matplotlib.use('Qt5Agg')
-    backend_found = True
-    print("Using Qt5Agg backend")
-except ImportError:
-    backend_found = False
-    print("Qt5Agg not available, will save and open images")
-
-def save_and_open_plot(filename):
-    """Save plot and try to open it on Ubuntu"""
-    if not backend_found:
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
-        print(f"Plot saved as {filename}")
-        try:
-            subprocess.run(['xdg-open', filename], check=True)
-            print(f"Opening {filename}...")
-        except:
-            print(f"Could not auto-open. Run: xdg-open {filename}")
-        plt.close()
 
 try:
     print("Fetching customer data...")
@@ -87,11 +68,11 @@ try:
                            key=lambda x: (x[1]['avg_freq'], x[1]['avg_spent']))
     
     cluster_names = {}
-    cluster_names[sorted_clusters[0][0]] = 'Inactive'           # Lowest freq + spending
-    cluster_names[sorted_clusters[1][0]] = 'New customers'      # Low-medium 
-    cluster_names[sorted_clusters[2][0]] = 'Occasional customers' # Medium
-    cluster_names[sorted_clusters[3][0]] = 'Loyal customers'    # High freq, medium spending
-    cluster_names[sorted_clusters[4][0]] = 'VIP customers'      # Highest freq + spending
+    cluster_names[sorted_clusters[0][0]] = 'Inactive'
+    cluster_names[sorted_clusters[1][0]] = 'New customers'
+    cluster_names[sorted_clusters[2][0]] = 'Occasional customers'
+    cluster_names[sorted_clusters[3][0]] = 'Loyal customers'
+    cluster_names[sorted_clusters[4][0]] = 'VIP customers'
     
     df['customer_category'] = df['cluster'].map(cluster_names)
     
@@ -122,11 +103,11 @@ try:
         'Loyal customers': '#D2B48C',     
         'New customers': '#87CEEB',       
         'Inactive': '#90EE90',            
-        'VIP customers': '#FFB6C1',       
+        'VIP customers': '#FF6B6B',       # Red for VIP to stand out
         'Occasional customers': '#DDA0DD' 
     }
     
-    categories = category_counts.index[::-1]  # Reverse for descending order
+    categories = category_counts.index[::-1]
     counts = category_counts.values[::-1]
     colors = [category_colors[cat] for cat in categories]
     
@@ -140,59 +121,41 @@ try:
     plt.title('Customer Categories Distribution')
     plt.xlim(0, max(counts) * 1.15)
     plt.tight_layout()
-    
-    if backend_found:
-        try:
-            plt.show()
-        except:
-            save_and_open_plot('customer_categories.png')
-    else:
-        save_and_open_plot('customer_categories.png')
+    plt.show()
     
     # GRAPH 2: Scatter plot of clusters in 2D
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 8))
     
-    cluster_colors = {
-        'Loyal customers': '#D2B48C',     
-        'New customers': '#87CEEB',       
-        'Inactive': '#90EE90',            
-        'VIP customers': '#FFB6C1',       
-        'Occasional customers': '#DDA0DD' 
-    }
+    # Plot smaller clusters first, larger ones last 
+    categories_by_size = df['customer_category'].value_counts().index[::-1]
     
-    for category in df['customer_category'].unique():
+    for category in categories_by_size:
         cat_data = df[df['customer_category'] == category]
+        size = 50 if category == 'VIP customers' else 20 
+        alpha = 0.8 if category == 'VIP customers' else 0.6
         plt.scatter(cat_data['purchase_frequency'], 
                    cat_data['total_spent'],
-                   c=cluster_colors[category],
-                   label=category,
-                   alpha=0.6,
-                   s=20)
+                   c=category_colors[category],
+                   label=f"{category} ({len(cat_data)})",
+                   alpha=alpha,
+                   s=size)
     
     centroids_original = scaler.inverse_transform(kmeans.cluster_centers_)
     plt.scatter(centroids_original[:, 0], centroids_original[:, 1], 
-               c='yellow', marker='o', s=200, edgecolors='black', linewidth=2,
-               label='Centroids')
+               c='yellow', marker='o', s=300, edgecolors='black', linewidth=1.5,
+               label='Centroids', zorder=10)
     
-    plt.xlabel('Purchase Frequency')
-    plt.ylabel('Total Spent (₳)') 
-    plt.title('Clusters of customers')
-    plt.legend()
+    plt.xlabel('Purchase Frequency', fontsize=12)
+    plt.ylabel('Total Spent (₳)', fontsize=12) 
+    plt.title('Clusters of customers', fontsize=14, fontweight='bold')
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True, alpha=0.3)
     
-    # Show full data range to see all clusters
     plt.xlim(0, df['purchase_frequency'].max() * 1.05)
     plt.ylim(0, df['total_spent'].max() * 1.05)
     
     plt.tight_layout()
-    
-    if backend_found:
-        try:
-            plt.show()
-        except:
-            save_and_open_plot('customer_clusters.png')
-    else:
-        save_and_open_plot('customer_clusters.png')
+    plt.show()
 
 except Exception as e:
     print(f"Error during execution: {e}")
