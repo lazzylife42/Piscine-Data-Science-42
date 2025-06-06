@@ -80,16 +80,14 @@ try:
 				 marker='None', linestyle='-', linewidth=1.5, 
 				 markersize=2, color='steelblue', alpha=0.8)
 	axes[0].set_ylabel('Number of purchases', fontsize=10)
-	#axes[0].set_ylim(0, 25000)  # Tes valeurs gardées
 	axes[0].grid(True, alpha=0.3)
 	
 	# Plot 2: Total sales by month (bar chart) - aligned with dates
-	bar_width = 20  # Width in days
+	bar_width = 20
 	axes[1].bar(df2['date'], df2['total_sales'] / 1000000, 
 				width=bar_width, color='lightblue', alpha=0.7, 
 				edgecolor='white', align='center')
 	axes[1].set_ylabel('total sales in million of ₳', fontsize=10)
-	#axes[1].set_ylim(0, 1.4)  # Tes valeurs gardées
 	axes[1].grid(True, alpha=0.3, axis='y')
 	
 	# Plot 3: Average spending per customer (area plot)
@@ -97,10 +95,8 @@ try:
 						 alpha=0.6, color='lightblue', 
 						 edgecolor='steelblue', linewidth=1)
 	axes[2].set_ylabel('average spend/customers in ₳', fontsize=10)
-	#axes[2].set_ylim(0, 10)  # Tes valeurs gardées
 	axes[2].grid(True, alpha=0.3)
 	
-	# Configure x-axis for all plots
 	# Configure x-axis for all plots
 	for ax in axes:
 		ax.xaxis.set_major_locator(mdates.MonthLocator())
@@ -110,7 +106,7 @@ try:
 	# Only show x-axis labels on the bottom plot
 	axes[0].set_xticklabels([])
 
-	# Pour le graphique du milieu, définir les ticks puis les labels
+	# For 3nd grpah month
 	month_positions = [pd.to_datetime(f'2022-{m}-15') for m in [10, 11, 12]] + \
 					[pd.to_datetime(f'2023-{m}-15') for m in [1, 2]]
 	axes[1].set_xticks(month_positions)
