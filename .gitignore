@@ -1,0 +1,4 @@
+venv/
+subject/
+.DS_Store
+*.png

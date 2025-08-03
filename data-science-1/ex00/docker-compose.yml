@@ -1,0 +1,62 @@
+#to clean "docker system prune -a --volumes -f"
+services:
+  postgres:
+    # To Connect "docker exec -it postgres_local  psql -U smonte piscineds localhost -W"
+    image: postgres:15
+    container_name: postgres_local
+    restart: always
+    environment:
+      POSTGRES_DB: piscineds
+      POSTGRES_USER: smonte
+      POSTGRES_PASSWORD: mysecretpassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../:/workspace
+    networks:
+      - postgres_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smonte -d piscineds"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    # Connexion automatique configurée
+      # Name: postgres_local
+      # Host: postgres (nom du service Docker)
+      # Port: 5432
+      # Database: piscineds
+      # Username: smonte
+      # Password: mysecretpassword
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_local
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      # Configuration automatique du serveur
+      - ./servers.json:/pgadmin4/servers.json
+      # Stockage persistant des préférences pgAdmin
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - postgres_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  postgres_network:
+    driver: bridge
